@@ -15,10 +15,10 @@
     --surface-2: #24262b;
     --text: #ece9e4;
     --text-muted: #9a9691;
-    --accent: #f2a93b;
+    --accent: #ffab3d;
     --accent-ink: #1a1200;
     --line: #34363b;
-    --accent-soft: rgba(242, 169, 59, 0.13);
+    --accent-soft: rgba(255, 171, 61, 0.15);
     --shadow: rgba(0, 0, 0, 0.35);
 
     --font-display: 'Big Shoulders Display', 'Arial Narrow', sans-serif;
@@ -33,10 +33,10 @@
       --surface-2: #ece8e1;
       --text: #17181b;
       --text-muted: #5b5852;
-      --accent: #a8631a;
+      --accent: #b06a15;
       --accent-ink: #ffffff;
       --line: #dedad2;
-      --accent-soft: rgba(168, 99, 26, 0.10);
+      --accent-soft: rgba(176, 106, 21, 0.10);
       --shadow: rgba(30, 25, 15, 0.10);
     }
   }
@@ -46,10 +46,10 @@
     --surface-2: #ece8e1;
     --text: #17181b;
     --text-muted: #5b5852;
-    --accent: #a8631a;
+    --accent: #b06a15;
     --accent-ink: #ffffff;
     --line: #dedad2;
-    --accent-soft: rgba(168, 99, 26, 0.10);
+    --accent-soft: rgba(176, 106, 21, 0.10);
     --shadow: rgba(30, 25, 15, 0.10);
   }
   :root[data-theme="dark"] {
@@ -58,10 +58,10 @@
     --surface-2: #24262b;
     --text: #ece9e4;
     --text-muted: #9a9691;
-    --accent: #f2a93b;
+    --accent: #ffab3d;
     --accent-ink: #1a1200;
     --line: #34363b;
-    --accent-soft: rgba(242, 169, 59, 0.13);
+    --accent-soft: rgba(255, 171, 61, 0.15);
     --shadow: rgba(0, 0, 0, 0.35);
   }
 
@@ -87,21 +87,75 @@
     justify-content: space-between;
     padding-block: 22px;
     border-bottom: 1px solid var(--line);
+    gap: 16px;
   }
   .wordmark {
     font-family: var(--font-mono);
     font-size: 14px;
     letter-spacing: 0.08em;
     font-weight: 500;
+    white-space: nowrap;
   }
   .wordmark b { color: var(--accent); font-weight: 500; }
+  .navright { display: flex; align-items: center; gap: 26px; }
   .navlinks { display: flex; gap: 28px; font-family: var(--font-mono); font-size: 13px; }
   .navlinks a {
+    position: relative;
     text-decoration: none;
     color: var(--text-muted);
     letter-spacing: 0.03em;
+    padding-bottom: 3px;
   }
-  .navlinks a:hover, .navlinks a:focus-visible { color: var(--accent); }
+  .navlinks a::after {
+    content: "";
+    position: absolute;
+    left: 0; right: 100%; bottom: 0;
+    height: 1px;
+    background: var(--accent);
+  }
+  @media (prefers-reduced-motion: no-preference) {
+    .navlinks a::after { transition: right 0.25s cubic-bezier(.4,0,.2,1); }
+  }
+  .navlinks a:hover, .navlinks a:focus-visible { color: var(--text); }
+  .navlinks a:hover::after, .navlinks a:focus-visible::after { right: 0; }
+
+  /* language toggle */
+  .langtoggle {
+    position: relative;
+    display: inline-flex;
+    font-family: var(--font-mono);
+    font-size: 12px;
+    letter-spacing: 0.05em;
+    border: 1px solid var(--line);
+    border-radius: 999px;
+    padding: 3px;
+    gap: 2px;
+  }
+  .langtoggle button {
+    position: relative;
+    z-index: 1;
+    background: none;
+    border: none;
+    color: var(--text-muted);
+    font-family: inherit;
+    font-size: inherit;
+    letter-spacing: inherit;
+    padding: 5px 12px;
+    border-radius: 999px;
+    cursor: pointer;
+  }
+  .langtoggle button[aria-pressed="true"] { color: var(--accent-ink); }
+  .langtoggle .thumb {
+    position: absolute;
+    top: 3px; bottom: 3px; left: 3px;
+    width: calc(50% - 3px);
+    background: var(--accent);
+    border-radius: 999px;
+  }
+  @media (prefers-reduced-motion: no-preference) {
+    .langtoggle .thumb { transition: transform 0.28s cubic-bezier(.34,1.56,.64,1); }
+  }
+  .langtoggle[data-lang="cs"] .thumb { transform: translateX(100%); }
 
   /* ---------- hero ---------- */
   header.hero {
@@ -127,6 +181,14 @@
     background: var(--accent);
     box-shadow: 0 0 0 4px var(--accent-soft);
   }
+  @media (prefers-reduced-motion: no-preference) {
+    .eyebrow::before { animation: pulseDot 2.4s ease-out infinite; }
+  }
+  @keyframes pulseDot {
+    0%   { box-shadow: 0 0 0 0 var(--accent-soft); }
+    70%  { box-shadow: 0 0 0 9px rgba(255, 171, 61, 0); }
+    100% { box-shadow: 0 0 0 0 rgba(255, 171, 61, 0); }
+  }
   h1.name {
     font-family: var(--font-display);
     font-weight: 800;
@@ -135,6 +197,7 @@
     letter-spacing: -0.01em;
     text-transform: uppercase;
   }
+  h1.name .accent-word { color: var(--accent); }
   p.tagline {
     max-width: 46ch;
     font-size: clamp(17px, 2vw, 20px);
@@ -165,9 +228,12 @@
     border-color: var(--accent);
     font-weight: 500;
   }
-  .btn.primary:hover, .btn.primary:focus-visible { filter: brightness(1.08); }
+  .btn.primary:hover, .btn.primary:focus-visible { filter: brightness(1.08); transform: translateY(-2px); }
   .btn.ghost { color: var(--text); }
-  .btn.ghost:hover, .btn.ghost:focus-visible { border-color: var(--accent); color: var(--accent); }
+  .btn.ghost:hover, .btn.ghost:focus-visible { border-color: var(--accent); color: var(--accent); transform: translateY(-2px); }
+  @media (prefers-reduced-motion: no-preference) {
+    .btn { transition: filter 0.15s ease, border-color 0.15s ease, color 0.15s ease, transform 0.18s cubic-bezier(.34,1.56,.64,1); }
+  }
 
   /* ---------- services ---------- */
   section.services { padding-block: 68px; border-bottom: 1px solid var(--line); }
@@ -197,6 +263,32 @@
     background: repeating-linear-gradient(to right, var(--line) 0 6px, transparent 6px 12px);
     z-index: 0;
   }
+  .pulse-track {
+    position: absolute;
+    top: 34px;
+    left: 8%;
+    right: 8%;
+    height: 1px;
+    z-index: 0;
+    pointer-events: none;
+  }
+  .pulse-track span {
+    position: absolute;
+    top: -3px;
+    width: 7px; height: 7px;
+    border-radius: 50%;
+    background: var(--accent);
+    box-shadow: 0 0 8px 1px var(--accent-soft);
+  }
+  @media (prefers-reduced-motion: no-preference) {
+    .pulse-track span { animation: travel 3.6s ease-in-out infinite; }
+  }
+  @keyframes travel {
+    0%   { left: 0%; opacity: 0; }
+    8%   { opacity: 1; }
+    92%  { opacity: 1; }
+    100% { left: 100%; opacity: 0; }
+  }
   .module {
     position: relative;
     z-index: 1;
@@ -208,6 +300,16 @@
     flex-direction: column;
     gap: 14px;
   }
+  @media (prefers-reduced-motion: no-preference) {
+    .module { transition: transform 0.2s cubic-bezier(.2,.7,.3,1), border-color 0.2s ease, box-shadow 0.2s ease; }
+    .module .dot { transition: box-shadow 0.2s ease; }
+  }
+  .module:hover {
+    transform: translateY(-5px);
+    border-color: var(--accent);
+    box-shadow: 0 14px 28px var(--shadow);
+  }
+  .module:hover .dot { box-shadow: 0 0 0 6px var(--accent-soft); }
   .module .dot {
     width: 12px; height: 12px; border-radius: 50%;
     background: var(--bg);
@@ -243,9 +345,15 @@
     display: grid;
     grid-template-columns: 64px 1fr;
     gap: 20px;
-    padding-block: 22px;
+    padding: 22px 0 22px 14px;
+    margin-left: -14px;
     border-bottom: 1px solid var(--line);
+    border-left: 2px solid transparent;
   }
+  @media (prefers-reduced-motion: no-preference) {
+    .step { transition: border-left-color 0.2s ease, background 0.2s ease; }
+  }
+  .step:hover { border-left-color: var(--accent); background: var(--accent-soft); }
   .step .n {
     font-family: var(--font-mono);
     font-size: 14px;
@@ -272,6 +380,10 @@
     padding: 9px 14px;
     color: var(--text-muted);
   }
+  @media (prefers-reduced-motion: no-preference) {
+    .tool { transition: border-color 0.15s ease, color 0.15s ease, transform 0.15s ease; }
+  }
+  .tool:hover { border-color: var(--accent); color: var(--text); transform: translateY(-2px); }
 
   /* ---------- contact ---------- */
   section.contact { padding-block: 80px; }
@@ -280,7 +392,7 @@
     font-weight: 800;
     font-size: clamp(36px, 6vw, 64px);
     text-transform: uppercase;
-    max-width: 14ch;
+    max-width: 16ch;
   }
   .contact-row {
     display: flex;
@@ -297,8 +409,12 @@
     text-decoration: none;
     border-bottom: 1px solid var(--accent);
     padding-bottom: 3px;
+    display: inline-block;
   }
-  a.mailto:hover, a.mailto:focus-visible { opacity: 0.8; }
+  @media (prefers-reduced-motion: no-preference) {
+    a.mailto { transition: transform 0.15s ease; }
+  }
+  a.mailto:hover, a.mailto:focus-visible { opacity: 0.85; transform: translateX(3px); }
   footer {
     padding-block: 26px;
     border-top: 1px solid var(--line);
@@ -314,14 +430,11 @@
   @media (max-width: 760px) {
     .navlinks { display: none; }
     .modules { grid-template-columns: 1fr; }
-    .modules::before { display: none; }
+    .modules::before, .pulse-track { display: none; }
     .step { grid-template-columns: 40px 1fr; }
   }
 
   :focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
-  @media (prefers-reduced-motion: no-preference) {
-    .module, .btn { transition: filter 0.15s ease, border-color 0.15s ease, color 0.15s ease; }
-  }
 </style>
 </head>
 <body>
@@ -330,64 +443,72 @@
 
   <nav class="top">
     <div class="wordmark">STANEK<b>·</b>TECH</div>
-    <div class="navlinks">
-      <a href="#services">Services</a>
-      <a href="#approach">Approach</a>
-      <a href="#toolkit">Toolkit</a>
-      <a href="#contact">Contact</a>
+    <div class="navright">
+      <div class="navlinks">
+        <a href="#services" data-i18n="nav.services">Services</a>
+        <a href="#approach" data-i18n="nav.approach">Approach</a>
+        <a href="#toolkit" data-i18n="nav.toolkit">Toolkit</a>
+        <a href="#contact" data-i18n="nav.contact">Contact</a>
+      </div>
+      <div class="langtoggle" id="langtoggle" data-lang="en">
+        <span class="thumb" aria-hidden="true"></span>
+        <button type="button" data-set-lang="en" aria-pressed="true">EN</button>
+        <button type="button" data-set-lang="cs" aria-pressed="false">CZ</button>
+      </div>
     </div>
   </nav>
 
   <header class="hero">
-    <div class="eyebrow">15+ years · Linux & network systems</div>
+    <div class="eyebrow" data-i18n="hero.eyebrow">15+ years · Linux &amp; network systems</div>
     <h1 class="name">Roman&nbsp;Stanek</h1>
-    <p class="tagline">Network software developer and automation specialist. I help companies streamline infrastructure, connect systems through reliable API integrations, and find where AI is actually worth the investment — built on 15+ years of Linux and network programming.</p>
+    <p class="tagline" data-i18n="hero.tagline">Network software developer and automation specialist. I help companies streamline infrastructure, connect systems through reliable API integrations, and find where AI is actually worth the investment — built on 15+ years of Linux and network programming.</p>
     <div class="hero-cta">
-      <a class="btn primary" href="#contact">Start a project →</a>
-      <a class="btn ghost" href="#services">See what I do</a>
+      <a class="btn primary" href="#contact" data-i18n="hero.cta1">Start a project →</a>
+      <a class="btn ghost" href="#services" data-i18n="hero.cta2">See what I do</a>
     </div>
   </header>
 
   <section class="services" id="services">
     <div class="section-head">
-      <h2>Services</h2>
-      <div class="section-num">03 MODULES</div>
+      <h2 data-i18n="services.heading">Services</h2>
+      <div class="section-num" data-i18n="services.num">03 MODULES</div>
     </div>
     <div class="modules">
+      <div class="pulse-track" aria-hidden="true"><span></span></div>
 
       <div class="module">
         <span class="dot"></span>
-        <div class="mlabel">MODULE 01</div>
-        <h3>AI Consulting</h3>
-        <p>Finding the places in your product or workflow where a language model genuinely earns its keep — then scoping, prototyping, and shipping it. Grounded in 15 years of building systems that have to actually run in production, not just demo well.</p>
+        <div class="mlabel" data-i18n="services.m1.label">MODULE 01</div>
+        <h3 data-i18n="services.m1.title">AI Consulting</h3>
+        <p data-i18n="services.m1.body">Finding the places in your product or workflow where a language model genuinely earns its keep — then scoping, prototyping, and shipping it. Grounded in 15 years of building systems that have to actually run in production, not just demo well.</p>
         <div class="tags">
-          <span class="tag">LLM integration</span>
-          <span class="tag">prompt & eval design</span>
-          <span class="tag">proof of concept</span>
+          <span class="tag" data-i18n="services.m1.tag1">LLM integration</span>
+          <span class="tag" data-i18n="services.m1.tag2">prompt &amp; eval design</span>
+          <span class="tag" data-i18n="services.m1.tag3">proof of concept</span>
         </div>
       </div>
 
       <div class="module">
         <span class="dot"></span>
-        <div class="mlabel">MODULE 02</div>
-        <h3>Process Automation</h3>
-        <p>Mapping the manual, repetitive steps in a workflow — forms, emails, logins, data moving between systems — and replacing them with Linux-based scripts and API integrations that run themselves. The same automation work I've been doing for over a decade.</p>
+        <div class="mlabel" data-i18n="services.m2.label">MODULE 02</div>
+        <h3 data-i18n="services.m2.title">Process Automation</h3>
+        <p data-i18n="services.m2.body">Mapping the manual, repetitive steps in a workflow — forms, emails, logins, data moving between systems — and replacing them with Linux-based scripts and API integrations that run themselves. The same automation work I've been doing for over a decade.</p>
         <div class="tags">
-          <span class="tag">Bash & Python scripting</span>
-          <span class="tag">API integrations</span>
-          <span class="tag">scheduled jobs</span>
+          <span class="tag" data-i18n="services.m2.tag1">Bash &amp; Python scripting</span>
+          <span class="tag" data-i18n="services.m2.tag2">API integrations</span>
+          <span class="tag" data-i18n="services.m2.tag3">scheduled jobs</span>
         </div>
       </div>
 
       <div class="module">
         <span class="dot"></span>
-        <div class="mlabel">MODULE 03</div>
-        <h3>Custom Software</h3>
-        <p>Network tools, protocol implementations, and backend systems built for exactly one job — from low-level sockets to the REST APIs on top. Fifteen years of C++ and Python on Linux.</p>
+        <div class="mlabel" data-i18n="services.m3.label">MODULE 03</div>
+        <h3 data-i18n="services.m3.title">Custom Software</h3>
+        <p data-i18n="services.m3.body">Network tools, protocol implementations, and backend systems built for exactly one job — from low-level sockets to the REST APIs on top. Fifteen years of C++ and Python on Linux.</p>
         <div class="tags">
-          <span class="tag">network protocols</span>
-          <span class="tag">REST APIs</span>
-          <span class="tag">C++ & Python</span>
+          <span class="tag" data-i18n="services.m3.tag1">network protocols</span>
+          <span class="tag" data-i18n="services.m3.tag2">REST APIs</span>
+          <span class="tag" data-i18n="services.m3.tag3">C++ &amp; Python</span>
         </div>
       </div>
 
@@ -396,36 +517,36 @@
 
   <section class="approach" id="approach">
     <div class="section-head">
-      <h2>Approach</h2>
+      <h2 data-i18n="approach.heading">Approach</h2>
       <div class="section-num">01 → 05</div>
     </div>
     <div class="steps">
       <div class="step">
         <div class="n">01</div>
-        <div><h4>Discover</h4><p>A short conversation about the actual bottleneck — not the tool you think you need, but the time or money it's costing you.</p></div>
+        <div><h4 data-i18n="approach.s1.title">Discover</h4><p data-i18n="approach.s1.body">A short conversation about the actual bottleneck — not the tool you think you need, but the time or money it's costing you.</p></div>
       </div>
       <div class="step">
         <div class="n">02</div>
-        <div><h4>Scope</h4><p>A concrete plan: what gets built, what it depends on, what it costs, and what "done" looks like — before any code is written.</p></div>
+        <div><h4 data-i18n="approach.s2.title">Scope</h4><p data-i18n="approach.s2.body">A concrete plan: what gets built, what it depends on, what it costs, and what "done" looks like — before any code is written.</p></div>
       </div>
       <div class="step">
         <div class="n">03</div>
-        <div><h4>Build</h4><p>Working software early and often, not a big reveal at the end. You see progress the same week it happens.</p></div>
+        <div><h4 data-i18n="approach.s3.title">Build</h4><p data-i18n="approach.s3.body">Working software early and often, not a big reveal at the end. You see progress the same week it happens.</p></div>
       </div>
       <div class="step">
         <div class="n">04</div>
-        <div><h4>Automate & test</h4><p>The system runs against real cases — including the messy edge cases — until it's boring in the way a good pipeline should be.</p></div>
+        <div><h4 data-i18n="approach.s4.title">Automate &amp; test</h4><p data-i18n="approach.s4.body">The system runs against real cases — including the messy edge cases — until it's boring in the way a good pipeline should be.</p></div>
       </div>
       <div class="step">
         <div class="n">05</div>
-        <div><h4>Hand off</h4><p>Documentation, access, and a walkthrough, so the system is yours to run — with support on call if something needs changing.</p></div>
+        <div><h4 data-i18n="approach.s5.title">Hand off</h4><p data-i18n="approach.s5.body">Documentation, access, and a walkthrough, so the system is yours to run — with support on call if something needs changing.</p></div>
       </div>
     </div>
   </section>
 
   <section class="toolkit" id="toolkit">
     <div class="section-head">
-      <h2>Toolkit</h2>
+      <h2 data-i18n="toolkit.heading">Toolkit</h2>
       <div class="section-num">STACK</div>
     </div>
     <div class="toolgrid">
@@ -443,18 +564,120 @@
   </section>
 
   <section class="contact" id="contact">
-    <h2>Let's automate something.</h2>
+    <h2 data-i18n="contact.heading">Let's automate something.</h2>
     <div class="contact-row">
       <a class="mailto" href="mailto:romanstanek81@protonmail.com">romanstanek81@protonmail.com</a>
-      <div class="section-num" style="text-align:right">Based remotely<br>Replies within 1–2 days</div>
+      <div class="section-num" style="text-align:right" data-i18n-html="contact.sub">Based remotely<br>Replies within 1–2 days</div>
     </div>
   </section>
 
   <footer>
-    <span>© 2026 Roman Stanek — stanektech.net</span>
-    <span>AI Consulting · Process Automation · Software</span>
+    <span data-i18n="footer.copy">© 2026 Roman Stanek — stanektech.net</span>
+    <span data-i18n="footer.tag">AI Consulting · Process Automation · Software</span>
   </footer>
 
 </div>
+
+<script>
+(function () {
+  var dict = {
+    "nav.services": { en: "Services", cs: "Služby" },
+    "nav.approach": { en: "Approach", cs: "Postup" },
+    "nav.toolkit":  { en: "Toolkit",  cs: "Nástroje" },
+    "nav.contact":  { en: "Contact",  cs: "Kontakt" },
+
+    "hero.eyebrow": { en: "15+ years · Linux & network systems", cs: "15+ let · Linux & síťové systémy" },
+    "hero.tagline": {
+      en: "Network software developer and automation specialist. I help companies streamline infrastructure, connect systems through reliable API integrations, and find where AI is actually worth the investment — built on 15+ years of Linux and network programming.",
+      cs: "Vývojář síťového softwaru a specialista na automatizaci. Pomáhám firmám zefektivnit infrastrukturu, propojit systémy pomocí spolehlivých API integrací a najít, kde se AI opravdu vyplatí — postaveno na 15+ letech zkušeností s Linuxem a síťovým programováním."
+    },
+    "hero.cta1": { en: "Start a project →", cs: "Domluvit projekt →" },
+    "hero.cta2": { en: "See what I do", cs: "Co dělám" },
+
+    "services.heading": { en: "Services", cs: "Služby" },
+    "services.num": { en: "03 MODULES", cs: "03 MODULY" },
+
+    "services.m1.label": { en: "MODULE 01", cs: "MODUL 01" },
+    "services.m2.label": { en: "MODULE 02", cs: "MODUL 02" },
+    "services.m3.label": { en: "MODULE 03", cs: "MODUL 03" },
+
+    "services.m1.title": { en: "AI Consulting", cs: "AI Konzultace" },
+    "services.m1.body": {
+      en: "Finding the places in your product or workflow where a language model genuinely earns its keep — then scoping, prototyping, and shipping it. Grounded in 15 years of building systems that have to actually run in production, not just demo well.",
+      cs: "Hledám místa ve vašem produktu nebo procesu, kde se jazykový model opravdu vyplatí — a pak to naplánuji, otestuji a nasadím. Podloženo 15 lety stavění systémů, které musí fungovat v provozu, ne jen předvést demo."
+    },
+    "services.m1.tag1": { en: "LLM integration", cs: "LLM integrace" },
+    "services.m1.tag2": { en: "prompt & eval design", cs: "návrh promptů & evaluace" },
+    "services.m1.tag3": { en: "proof of concept", cs: "proof of concept" },
+
+    "services.m2.title": { en: "Process Automation", cs: "Automatizace procesů" },
+    "services.m2.body": {
+      en: "Mapping the manual, repetitive steps in a workflow — forms, emails, logins, data moving between systems — and replacing them with Linux-based scripts and API integrations that run themselves. The same automation work I've been doing for over a decade.",
+      cs: "Mapuji ruční, opakující se kroky v procesu — formuláře, e-maily, přihlašování, přenos dat mezi systémy — a nahrazuji je skripty na Linuxu a API integracemi, které běží samy. Stejná automatizační práce, kterou dělám přes deset let."
+    },
+    "services.m2.tag1": { en: "Bash & Python scripting", cs: "Bash & Python skriptování" },
+    "services.m2.tag2": { en: "API integrations", cs: "API integrace" },
+    "services.m2.tag3": { en: "scheduled jobs", cs: "plánované úlohy" },
+
+    "services.m3.title": { en: "Custom Software", cs: "Vlastní software" },
+    "services.m3.body": {
+      en: "Network tools, protocol implementations, and backend systems built for exactly one job — from low-level sockets to the REST APIs on top. Fifteen years of C++ and Python on Linux.",
+      cs: "Síťové nástroje, implementace protokolů a backendové systémy postavené přesně na jednu úlohu — od nízkoúrovňových socketů po REST API nad nimi. Patnáct let C++ a Pythonu na Linuxu."
+    },
+    "services.m3.tag1": { en: "network protocols", cs: "síťové protokoly" },
+    "services.m3.tag2": { en: "REST APIs", cs: "REST API" },
+    "services.m3.tag3": { en: "C++ & Python", cs: "C++ & Python" },
+
+    "approach.heading": { en: "Approach", cs: "Postup" },
+    "approach.s1.title": { en: "Discover", cs: "Zmapování" },
+    "approach.s1.body": { en: "A short conversation about the actual bottleneck — not the tool you think you need, but the time or money it's costing you.", cs: "Krátký rozhovor o skutečném problému — ne o nástroji, který si myslíte, že potřebujete, ale o čase nebo penězích, které vás to stojí." },
+    "approach.s2.title": { en: "Scope", cs: "Návrh" },
+    "approach.s2.body": { en: "A concrete plan: what gets built, what it depends on, what it costs, and what \"done\" looks like — before any code is written.", cs: "Konkrétní plán: co se postaví, na čem to závisí, kolik to bude stát a jak vypadá „hotovo“ — než se napíše jediný řádek kódu." },
+    "approach.s3.title": { en: "Build", cs: "Vývoj" },
+    "approach.s3.body": { en: "Working software early and often, not a big reveal at the end. You see progress the same week it happens.", cs: "Funkční software už od začátku, ne jedno velké odhalení na konci. Pokrok vidíte ten samý týden, kdy nastane." },
+    "approach.s4.title": { en: "Automate & test", cs: "Automatizace & testování" },
+    "approach.s4.body": { en: "The system runs against real cases — including the messy edge cases — until it's boring in the way a good pipeline should be.", cs: "Systém běží na reálných případech — včetně nepříjemných výjimek — dokud není nudný tak, jak dobrý pipeline má být." },
+    "approach.s5.title": { en: "Hand off", cs: "Předání" },
+    "approach.s5.body": { en: "Documentation, access, and a walkthrough, so the system is yours to run — with support on call if something needs changing.", cs: "Dokumentace, přístupy a zaškolení, takže systém je váš a umíte ho provozovat — s podporou na telefonu, kdyby bylo potřeba něco změnit." },
+
+    "toolkit.heading": { en: "Toolkit", cs: "Nástroje" },
+
+    "contact.heading": { en: "Let's automate something.", cs: "Pojďme něco zautomatizovat." },
+    "contact.sub": { en: "Based remotely<br>Replies within 1–2 days", cs: "Pracuji odkudkoli<br>Odpovídám do 1–2 dnů" },
+
+    "footer.copy": { en: "© 2026 Roman Stanek — stanektech.net", cs: "© 2026 Roman Stanek — stanektech.net" },
+    "footer.tag":  { en: "AI Consulting · Process Automation · Software", cs: "AI Konzultace · Automatizace procesů · Software" }
+  };
+
+  function applyLang(lang) {
+    document.querySelectorAll("[data-i18n]").forEach(function (el) {
+      var key = el.getAttribute("data-i18n");
+      if (dict[key] && dict[key][lang]) el.textContent = dict[key][lang];
+    });
+    document.querySelectorAll("[data-i18n-html]").forEach(function (el) {
+      var key = el.getAttribute("data-i18n-html");
+      if (dict[key] && dict[key][lang]) el.innerHTML = dict[key][lang];
+    });
+    document.documentElement.lang = lang;
+    var toggle = document.getElementById("langtoggle");
+    toggle.setAttribute("data-lang", lang);
+    toggle.querySelectorAll("button").forEach(function (b) {
+      b.setAttribute("aria-pressed", b.getAttribute("data-set-lang") === lang ? "true" : "false");
+    });
+    try { localStorage.setItem("stanektech_lang", lang); } catch (e) {}
+  }
+
+  document.getElementById("langtoggle").addEventListener("click", function (e) {
+    var btn = e.target.closest("button[data-set-lang]");
+    if (!btn) return;
+    applyLang(btn.getAttribute("data-set-lang"));
+  });
+
+  var initial = "en";
+  try { initial = localStorage.getItem("stanektech_lang") || "en"; } catch (e) {}
+  applyLang(initial);
+})();
+</script>
+
 </body>
 </html>
